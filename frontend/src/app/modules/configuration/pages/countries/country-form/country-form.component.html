@@ -1,0 +1,72 @@
+<div class="page-container">
+  <div class="form-header">
+    <button
+      pButton
+      type="button"
+      icon="pi pi-arrow-left"
+      class="p-button-text p-button-secondary"
+      (click)="onCancel()"
+      pTooltip="Volver"
+      tooltipPosition="bottom"
+    ></button>
+    <h1>{{ isEditing ? 'Editar País' : 'Nuevo País' }}</h1>
+    <div></div>
+  </div>
+
+  <form [formGroup]="countryForm" (ngSubmit)="onSubmit()" class="form-content">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="code">Código</label>
+        <input
+          id="code"
+          pInputText
+          type="text"
+          formControlName="code"
+          placeholder="Ingrese el código (ej: EC)"
+          class="form-input"
+          [class.ng-invalid]="countryForm.get('code')?.invalid && countryForm.get('code')?.touched"
+        />
+        <div class="error-message" *ngIf="countryForm.get('code')?.invalid && countryForm.get('code')?.touched">
+          El código es requerido
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="name">Nombre</label>
+        <input
+          id="name"
+          pInputText
+          type="text"
+          formControlName="name"
+          placeholder="Ingrese el nombre del país"
+          class="form-input"
+          [class.ng-invalid]="countryForm.get('name')?.invalid && countryForm.get('name')?.touched"
+        />
+        <div class="error-message" *ngIf="countryForm.get('name')?.invalid && countryForm.get('name')?.touched">
+          El nombre es requerido
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="form-footer">
+    <button
+      pButton
+      type="button"
+      label="Cancelar"
+      icon="pi pi-times"
+      class="btn-cancel"
+      (click)="onCancel()"
+    ></button>
+    <button
+      pButton
+      type="button"
+      [label]="isSaving ? 'Guardando...' : 'Guardar'"
+      icon="pi pi-check"
+      class="btn-save"
+      (click)="onSubmit()"
+      [disabled]="!countryForm.valid || isSaving"
+      [loading]="isSaving"
+    ></button>
+  </div>
+</div>

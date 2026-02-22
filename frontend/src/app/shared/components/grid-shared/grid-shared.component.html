@@ -1,0 +1,155 @@
+<div class="grid-container">
+  <div class="grid-toolbar">
+    <div class="toolbar-left">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        class="icon-btn btn-add"
+        (click)="onAdd()"
+        pTooltip="Agregar nuevo registro"
+        tooltipPosition="bottom"
+      ></button>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-download"
+        class="icon-btn btn-export"
+        (click)="onExport()"
+        pTooltip="Exportar datos"
+        tooltipPosition="bottom"
+      ></button>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-refresh"
+        class="icon-btn btn-refresh"
+        (click)="onRefresh()"
+        pTooltip="Actualizar datos"
+        tooltipPosition="bottom"
+      ></button>
+    </div>
+
+    <div class="toolbar-right">
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Buscar..."
+          (input)="onSearch()"
+          class="search-input"
+        />
+      </span>
+    </div>
+  </div>
+
+  <p-table
+    #dt
+    [value]="rows"
+    [columns]="columns"
+    [paginator]="true"
+    [rows]="pageSize"
+    [totalRecords]="totalRecords"
+    [first]="first"
+    [loading]="isLoading"
+    [lazy]="true"
+    (onLazyLoad)="onLazyLoad($event)"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+    [globalFilterFields]="globalFilterFields"
+    responsiveLayout="scroll"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th 
+          *ngFor="let col of columns" 
+          [style.width]="col.width || 'auto'"
+          [pSortableColumn]="col.sortable !== false ? col.field : null"
+        >
+          {{ col.header }}
+          <p-sortIcon 
+            *ngIf="col.sortable !== false" 
+            [field]="col.field"
+          ></p-sortIcon>
+        </th>
+        <th style="width: 120px">Acciones</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-row>
+      <tr 
+        [class.row-selected]="isRowSelected(row)"
+        (click)="onRowClick(row)"
+        class="data-row"
+      >
+        <td *ngFor="let col of columns">
+          <ng-container *ngIf="col.template; else defaultTemplate">
+            <ng-container
+              *ngTemplateOutlet="col.template; context: { $implicit: row }"
+            ></ng-container>
+          </ng-container>
+          <ng-template #defaultTemplate>
+            <ng-container *ngIf="isBoolean(getNestedValue(row, col.field)); else textTemplate">
+              <div class="boolean-cell">
+                <i *ngIf="isTruthy(getNestedValue(row, col.field))" class="pi pi-check check-icon"></i>
+                <i *ngIf="isFalsy(getNestedValue(row, col.field))" class="pi pi-times times-icon"></i>
+              </div>
+            </ng-container>
+            <ng-template #textTemplate>
+              {{ getNestedValue(row, col.field) }}
+            </ng-template>
+          </ng-template>
+        </td>
+        <td class="actions-cell">
+          <button
+            pButton
+            type="button"
+            icon="pi pi-pencil"
+            class="icon-btn btn-edit"
+            (click)="onEdit(row)"
+            pTooltip="Editar"
+            tooltipPosition="bottom"
+          ></button>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-trash"
+            class="icon-btn btn-delete"
+            (click)="onDeleteConfirm(row)"
+            pTooltip="Eliminar"
+            tooltipPosition="bottom"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td [attr.colspan]="columns.length + 1" class="empty-message">
+          No hay registros para mostrar
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="loadingbody">
+      <tr>
+        <td [attr.colspan]="columns.length + 1" class="text-center">
+          Cargando datos...
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <app-modal-confirmation
+    [isVisible]="showDeleteConfirm"
+    title="Confirmar eliminación"
+    [message]="'¿Está seguro de que desea eliminar este registro?'"
+    icon="pi-trash"
+    acceptLabel="Eliminar"
+    [isDanger]="true"
+    (accept)="onConfirmDelete()"
+    (cancel)="onConfirmCancel()"
+  ></app-modal-confirmation>
+</div>

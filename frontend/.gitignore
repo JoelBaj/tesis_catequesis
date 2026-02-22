@@ -1,0 +1,8 @@
+# Node and build folders
+node_modules/
+dist/
+build/
+.env
+*.log
+.cache/
+.angular/

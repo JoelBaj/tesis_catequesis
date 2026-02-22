@@ -1,0 +1,112 @@
+<div class="page-container">
+  <div class="form-header">
+    <button
+      pButton
+      type="button"
+      icon="pi pi-arrow-left"
+      class="p-button-text p-button-secondary"
+      (click)="onCancel()"
+      pTooltip="Volver"
+      tooltipPosition="bottom"
+    ></button>
+    <h1>{{ isEditing ? 'Editar Ciudad' : 'Nueva Ciudad' }}</h1>
+    <div></div>
+  </div>
+
+  <form [formGroup]="cityForm" (ngSubmit)="onSubmit()" class="form-content">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="countryId">País</label>
+        <app-input-search
+          id="countryId"
+          formControlName="countryId"
+          [data]="countries"
+          [displayColumns]="['code', 'name']"
+          [columnHeaders]="['Código', 'Nombre']"
+          [searchFields]="['name', 'code']"
+          dialogTitle="Seleccionar País"
+          placeholder="Seleccione un país"
+          [disabled]="isEditing"
+          (selected)="onSelectCountry($event)"
+        />
+        <div class="error-message" *ngIf="cityForm.get('countryId')?.invalid && cityForm.get('countryId')?.touched">
+          El país es requerido
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="provinceId">Provincia</label>
+        <app-input-search
+          id="provinceId"
+          formControlName="provinceId"
+          [data]="filteredProvinces"
+          [displayColumns]="['code', 'name']"
+          [columnHeaders]="['Código', 'Nombre']"
+          [searchFields]="['name', 'code']"
+          dialogTitle="Seleccionar Provincia"
+          placeholder="Seleccione una provincia"
+          [disabled]="!selectedCountry"
+          (selected)="onSelectProvince($event)"
+        />
+        <div class="error-message" *ngIf="cityForm.get('provinceId')?.invalid && cityForm.get('provinceId')?.touched">
+          La provincia es requerida
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="code">Código</label>
+        <input
+          id="code"
+          pInputText
+          type="text"
+          formControlName="code"
+          placeholder="Ingrese el código de la ciudad"
+          class="form-input"
+          [class.ng-invalid]="cityForm.get('code')?.invalid && cityForm.get('code')?.touched"
+        />
+        <div class="error-message" *ngIf="cityForm.get('code')?.invalid && cityForm.get('code')?.touched">
+          El código es requerido
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="name">Nombre</label>
+        <input
+          id="name"
+          pInputText
+          type="text"
+          formControlName="name"
+          placeholder="Ingrese el nombre de la ciudad"
+          class="form-input"
+          [class.ng-invalid]="cityForm.get('name')?.invalid && cityForm.get('name')?.touched"
+        />
+        <div class="error-message" *ngIf="cityForm.get('name')?.invalid && cityForm.get('name')?.touched">
+          El nombre es requerido
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="form-footer">
+    <button
+      pButton
+      type="button"
+      label="Cancelar"
+      icon="pi pi-times"
+      class="btn-cancel"
+      (click)="onCancel()"
+    ></button>
+    <button
+      pButton
+      type="button"
+      [label]="isSaving ? 'Guardando...' : 'Guardar'"
+      icon="pi pi-check"
+      class="btn-save"
+      (click)="onSubmit()"
+      [disabled]="!cityForm.valid || isSaving"
+      [loading]="isSaving"
+    ></button>
+  </div>
+</div>

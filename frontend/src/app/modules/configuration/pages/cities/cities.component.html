@@ -1,0 +1,20 @@
+<router-outlet></router-outlet>
+<div class="page-container" *ngIf="!hasChildRoute">
+  <h1>Ciudades</h1>
+
+  <app-grid-shared
+    [columns]="columns"
+    [rows]="cities"
+    [totalRecords]="totalRecords"
+    [pageSize]="pageSize"
+    [isLoading]="isLoading"
+    [globalFilterFields]="['name', 'province.name']"
+    (add)="onAdd()"
+    (edit)="onEdit($event)"
+    (delete)="onDelete($event)"
+    (refresh)="onRefresh()"
+    (export)="onExport()"
+    (lazyLoad)="onLazyLoad($event)"
+  ></app-grid-shared>
+</div>
+

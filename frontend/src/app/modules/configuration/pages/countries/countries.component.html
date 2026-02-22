@@ -1,0 +1,19 @@
+<router-outlet></router-outlet>
+<div class="page-container" *ngIf="!hasChildRoute">
+  <h1>Países</h1>
+
+  <app-grid-shared
+    [columns]="columns"
+    [rows]="countries"
+    [totalRecords]="totalRecords"
+    [pageSize]="pageSize"
+    [isLoading]="isLoading"
+    [globalFilterFields]="['name', 'code']"
+    (add)="onAdd()"
+    (edit)="onEdit($event)"
+    (delete)="onDelete($event)"
+    (refresh)="onRefresh()"
+    (export)="onExport()"
+    (lazyLoad)="onLazyLoad($event)"
+  ></app-grid-shared>
+</div>
