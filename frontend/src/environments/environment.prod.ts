@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: '/api-catequesis',
+  sacAuthUrl: '/api-sacramentos/',
+  apiUrl: '/api-catequesis/',
 };

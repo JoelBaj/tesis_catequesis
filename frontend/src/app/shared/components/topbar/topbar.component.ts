@@ -25,7 +25,11 @@ import { MenuItem } from 'primeng/api';
           tooltipPosition="bottom"
         ></button>
       </div>
-
+ <div>
+        <button class="btn btn-outline-primary" (click)="irAlMain()">
+            <i class="bi bi-house"></i> Panel Principal
+        </button>
+    </div>
       <div class="topbar-right">
         <button
           pButton
@@ -227,6 +231,10 @@ export class TopbarComponent {
     }
   }
 
+  irAlMain() {
+    window.location.href = 'http://192.168.100.76/main';
+  }
+
   private initializeUser(): void {
     const user = this.authService.getCurrentUser();
     if (user) {
@@ -282,7 +290,18 @@ export class TopbarComponent {
   }
 
   onLogout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+    this.authService.logout().subscribe({
+      next: () => {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user');
+        window.location.href = 'http://192.168.100.76';
+      },
+      error: () => {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user');
+        window.location.href = 'http://192.168.100.76';
+        // this.router.navigate(['/auth/login']);
+      }
+    });
   }
 }
